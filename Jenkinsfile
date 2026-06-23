@@ -29,16 +29,14 @@ pipeline {
 
         stage('Déploiement AWS') {
             steps {
-                sshagent(['aws-ssh-key']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@51.20.82.121 "
-                            docker pull timotheh/landing-page:latest &&
-                            docker stop landing-page || true &&
-                            docker rm landing-page || true &&
-                            docker run -d --name landing-page -p 80:80 timotheh/landing-page:latest
-                        "
-                    '''
-                }
+                sh '''
+                    ssh -o StrictHostKeyChecking=no -i /root/.ssh/jenkins-aws ubuntu@51.20.82.121 "
+                        docker pull timotheh/landing-page:latest &&
+                        docker stop landing-page || true &&
+                        docker rm landing-page || true &&
+                        docker run -d --name landing-page -p 80:80 timotheh/landing-page:latest
+                    "
+                '''
             }
         }
     }
